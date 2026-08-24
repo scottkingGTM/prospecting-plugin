@@ -1,14 +1,10 @@
 # Prospecting Plugin
 
-A Chrome side-panel extension + small backend that turns "I'm looking at a
-LinkedIn profile or a company website" into three fast, safe actions against
-your **HubSpot** CRM:
+A Chrome extension that turns enables a CRM lookup and Contact enrichment without leaving LinkedIn:
 
-1. **Recognize** — is this person/company already in HubSpot? (green = yes,
-   red = net-new), with possible-duplicate matches surfaced before you add
-   anything.
+1. **Recognize** — is this person/company already in HubSpot? With possible-duplicate matches surfaced before you try to enrich.
 2. **Enrich** — find a verified work email, personal email, or mobile on
-   demand, through a **pluggable enrichment provider** (ships with a
+   demand, through the **enrichment provider of choice** (ships with a
    [FullEnrich](https://fullenrich.com) reference adapter; swap in any vendor —
    see [PROVIDERS.md](PROVIDERS.md)).
 3. **Add** — create the contact (and company) in HubSpot through a
