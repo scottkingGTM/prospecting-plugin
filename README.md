@@ -1,6 +1,6 @@
 # Prospecting Plugin
 
-A Chrome extension that turns enables a CRM lookup and Contact enrichment without leaving LinkedIn:
+A Chrome extension that enables CRM lookup and Contact enrichment without leaving LinkedIn:
 
 1. **Recognize** — is this person/company already in HubSpot? With possible-duplicate matches surfaced before you try to enrich.
 2. **Enrich** — find a verified work email, personal email, or mobile on
