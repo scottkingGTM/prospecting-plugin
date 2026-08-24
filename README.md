@@ -30,19 +30,27 @@ data vendor's own heavyweight extension.
 ## How it works
 
 ```
-┌─────────────────────┐        ┌──────────────────────────┐        ┌───────────┐
-│  Chrome extension   │  HTTPS │   Backend (Python,        │  API   │  HubSpot  │
-│  (MV3 side panel)   │ ─────▶ │   stdlib HTTP server)     │ ─────▶ │  (CRM)    │
-│                     │  bearer│                           │        └───────────┘
-│  • reads tab URL    │  token │  • recognize / enrich /   │        ┌───────────┐
-│  • renders UI       │        │    resolve / commit       │  API   │ Enrichment│
-│  • holds rep token  │        │  • per-rep auth + caps    │ ─────▶ │  vendor   │
-│  • NO page reads    │        │  • audit log + dedupe     │        │(pluggable)│
-└─────────────────────┘        │            │              │        └───────────┘
-                               │            ▼              │
-                               │     Postgres (its own     │
-                               │     `prospector` schema)  │
-                               └──────────────────────────┘
+        ┌────────────────────────────────┐
+        │  Chrome extension (MV3)        │   • reads ONLY the tab URL/title
+        │  side panel                    │   • holds the rep token
+        └───────────────┬────────────────┘   • no content scripts
+                        │
+                        │  HTTPS + bearer token
+                        ▼
+        ┌────────────────────────────────┐  API   ┌──────────────────────┐
+        │  Backend (Python, stdlib)      │───────▶│  HubSpot (CRM)       │
+        │                                │        └──────────────────────┘
+        │  • recognize / enrich /        │
+        │    resolve / commit            │  API   ┌──────────────────────┐
+        │  • per-rep auth + spend caps   │───────▶│  Enrichment vendor   │
+        │  • audit log + dedupe guards   │        │  (pluggable)         │
+        └───────────────┬────────────────┘        └──────────────────────┘
+                        │
+                        ▼
+        ┌────────────────────────────────┐
+        │  Postgres                      │
+        │  (its own `prospector` schema) │
+        └────────────────────────────────┘
 ```
 
 - The **extension** is a thin client. It reads only the **active tab's URL and
