@@ -1,0 +1,13 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+data/
+extension/*.zip
+.DS_Store
+
+# Never commit an extension signing key or packed build
+signing/
+*.pem
+dist_ext/

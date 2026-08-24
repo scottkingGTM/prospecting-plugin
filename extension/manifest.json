@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Prospecting Plugin",
+  "version": "1.0.0",
+  "description": "Recognizes the person or company you're viewing against HubSpot, finds emails and phones on demand, and adds contacts correctly.",
+  "permissions": [
+    "sidePanel",
+    "tabs",
+    "storage",
+    "notifications",
+    "alarms"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8080/*",
+    "https://YOUR-BACKEND.example.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "action": {
+    "default_title": "Open Prospecting Plugin"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  }
+}

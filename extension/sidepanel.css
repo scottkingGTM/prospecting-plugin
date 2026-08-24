@@ -1,0 +1,704 @@
+/* Prospecting Plugin side panel. Compact, 360px-friendly, no external assets.
+   Two-token palette, dark-mode aware via prefers-color-scheme. */
+
+:root {
+  /* Accent palette (same in both modes) — swap for your own brand colors */
+  --brand: #0a3925;        /* deep green */
+  --brand-fg: #ffffff;
+  --brand-soft: #99d1a4;   /* light green */
+  --chip-brand-bg: #99d1a4;
+  --chip-brand-fg: #0a3925;
+
+  --bg: #ffffff;
+  --fg: #0a3925;
+  --muted: #5f7268;
+  --card: #f4f8f5;
+  --border: #dde7e0;
+  --accent: #0a3925;
+  --accent-fg: #ffffff;
+  --ok: #16a34a;
+  --warn-bg: #fef3c7;
+  --warn-fg: #92400e;
+  --warn-border: #fcd34d;
+  --good-bg: #e4f4e8;
+  --good-fg: #166534;
+  --good-border: #99d1a4;
+  --err: #dc2626;
+  --err-bg: #fee2e2;
+  --err-border: #fca5a5;
+  --chip-bg: #e7f0ea;
+  --skeleton: #e4ece7;
+  --inferred-bg: #f3e8ff;
+  --inferred-fg: #6b21a8;
+  --inferred-border: #d8b4fe;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a2118;
+    --fg: #e4efe8;
+    --muted: #8fa697;
+    --card: #102c1f;
+    --border: #1f4030;
+    --accent: #99d1a4;
+    --accent-fg: #0a3925;
+    --ok: #99d1a4;
+    --warn-bg: #3a2f10;
+    --warn-fg: #fbd34d;
+    --warn-border: #6b5518;
+    --good-bg: #10331d;
+    --good-fg: #99d1a4;
+    --good-border: #2a5a3f;
+    --err: #f87171;
+    --err-bg: #3a1414;
+    --err-border: #7f2b2b;
+    --chip-bg: #173527;
+    --skeleton: #163326;
+    --inferred-bg: #2e1b45;
+    --inferred-fg: #c9a2f7;
+    --inferred-border: #5b3a85;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "DM Sans", system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* ---------- header ---------- */
+
+/* Header anchor: accent bar with legible text in BOTH modes. */
+.hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(153, 209, 164, 0.25);
+  position: sticky;
+  top: 0;
+  background: var(--brand);
+  z-index: 2;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.hdr h1 {
+  font-size: 14px;
+  font-weight: 650;
+  margin: 0;
+  white-space: nowrap;
+  color: var(--brand-fg);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.dot-idle { background: rgba(153, 209, 164, 0.5); }
+.dot-ok   { background: var(--ok); }
+.dot-err  { background: var(--err); }
+
+.surface-label {
+  color: var(--brand-soft);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 45%;
+}
+
+.credits {
+  color: var(--brand-soft);
+  font-size: 11px;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+/* ---------- main ---------- */
+
+.main { padding: 12px; }
+
+.state-msg {
+  color: var(--muted);
+  text-align: center;
+  padding: 32px 16px;
+}
+.state-msg .big {
+  font-size: 14px;
+  color: var(--fg);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* ---------- cards ---------- */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.card .card-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.contact-name {
+  font-size: 15px;
+  font-weight: 650;
+  margin-bottom: 2px;
+  overflow-wrap: anywhere;
+}
+
+.kv {
+  display: flex;
+  gap: 6px;
+  margin: 2px 0;
+  overflow-wrap: anywhere;
+}
+.kv .k {
+  color: var(--muted);
+  flex: 0 0 auto;
+  min-width: 78px;
+}
+
+.verdict-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 650;
+  margin-bottom: 8px;
+}
+.verdict-line.green { color: var(--ok); }
+.verdict-line.red   { color: var(--err); }
+
+/* ---------- chips ---------- */
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 6px 0;
+}
+
+.chip {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--chip-bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+/* Accent chips: soft-accent bg always carries deep-accent text. */
+.chip.tier   { background: var(--chip-brand-bg); color: var(--chip-brand-fg); border-color: transparent; }
+.chip.target { background: var(--chip-brand-bg); color: var(--chip-brand-fg); border-color: transparent; }
+
+.gate {
+  display: block;
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin: 4px 0;
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+  border: 1px solid var(--warn-border);
+}
+.gate.good {
+  background: var(--good-bg);
+  color: var(--good-fg);
+  border-color: var(--good-border);
+}
+
+/* ---------- company matches ---------- */
+
+.match-row {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin: 6px 0;
+  background: var(--bg);
+}
+.match-row.preferred {
+  border-color: var(--accent);
+}
+
+.match-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.chip.preferred-tag {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: transparent;
+}
+
+.match-domain {
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.match-note {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 4px 0 8px;
+}
+
+/* ---------- banners ---------- */
+
+.banner {
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin: 8px 0;
+}
+.banner.sync {
+  background: var(--good-bg);
+  color: var(--good-fg);
+  border: 1px solid var(--good-border);
+}
+.banner.error {
+  background: var(--err-bg);
+  color: var(--err);
+  border: 1px solid var(--err-border);
+}
+.banner.subdued {
+  background: var(--card);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+/* ---------- buttons & meta ---------- */
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--fg);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn:hover { border-color: var(--muted); }
+.btn.primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: transparent;
+}
+.btn.link {
+  border: none;
+  background: none;
+  color: var(--accent);
+  padding: 0;
+  text-decoration: underline;
+  font-weight: 500;
+}
+.btn.icon {
+  padding: 2px 7px;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 8px;
+}
+.meta-row .spacer { flex: 1; }
+
+.coverage {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+}
+.coverage .yes { color: var(--ok); }
+.coverage .no  { color: var(--err); }
+
+/* ---------- record view ---------- */
+
+.back-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.record-title {
+  font-size: 16px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+  margin-bottom: 2px;
+}
+
+.record-grid { margin: 6px 0; }
+
+.record-desc {
+  font-size: 12px;
+  color: var(--fg);
+  margin: 8px 0 2px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.record-desc.clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+}
+
+/* value + copy button on one line (record emails) */
+.kv-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  overflow-wrap: anywhere;
+}
+
+.btn.view-record { margin-top: 8px; }
+.btn-row .btn.view-record { margin-top: 0; }
+
+/* ---------- add-to-HubSpot flow (Phases 3-4) ---------- */
+
+.btn.add-hubspot {
+  width: 100%;
+  text-align: center;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* Exact contact match: big and loud — the create path is gone. */
+.match-row.exact {
+  border-color: var(--good-border);
+  background: var(--good-bg);
+}
+.exact-headline {
+  color: var(--good-fg);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.chip.possible {
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+  border-color: var(--warn-border);
+}
+
+.pick-title { margin-top: 12px; }
+
+/* Radio-style company rows: whole row is the button. */
+.pick-row {
+  display: block;
+  width: 100%;
+  text-align: left;
+  appearance: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin: 6px 0;
+  background: var(--bg);
+  cursor: pointer;
+}
+.pick-row:hover { border-color: var(--accent); }
+.pick-row.preferred { border-color: var(--accent); }
+/* Careers/mail subdomain records: visually demoted, still pickable. */
+.pick-row.subdomain { opacity: 0.55; }
+.pick-row.subdomain:hover { opacity: 0.85; }
+.pick-row.create {
+  border-style: dashed;
+  color: var(--muted);
+  font-weight: 600;
+  margin-top: 12px;
+}
+.subdomain-note {
+  font-size: 11px;
+  color: var(--warn-fg);
+  margin-top: 2px;
+}
+
+.banner.warn {
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+  border: 1px solid var(--warn-border);
+}
+.banner.warn.big { font-weight: 700; }
+
+.form-field { margin: 8px 0; }
+.form-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 12px;
+}
+.form-field input:focus,
+.form-field select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 8px 0;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Late-arriving enrichment merged into empty draft fields — subtle,
+   dismissible. */
+.merge-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  background: var(--card);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 11px;
+  margin: 5px 0;
+}
+.merge-note span { flex: 1 1 auto; overflow-wrap: anywhere; }
+.merge-note .btn.dismiss {
+  flex: 0 0 auto;
+  padding: 0 5px;
+  border: none;
+  background: none;
+  color: var(--muted);
+}
+
+/* Inferred emails held back from the picker — same purple as the chip. */
+.inferred-note {
+  background: var(--inferred-bg);
+  color: var(--inferred-fg);
+  border: 1px solid var(--inferred-border);
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 11px;
+  margin: 5px 0;
+}
+
+.report-sub {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  font-weight: 600;
+  margin: 10px 0 3px;
+}
+
+.note-preview {
+  white-space: pre-wrap;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 9px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border: 1px solid var(--border);
+  background: var(--chip-bg);
+  color: var(--fg);
+}
+.badge.triage {
+  background: var(--err-bg);
+  color: var(--err);
+  border-color: var(--err-border);
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  align-items: center;
+}
+
+.link-ctl { margin-top: 6px; }
+
+/* ---------- enrichment ---------- */
+
+.enrich-field { margin: 7px 0; }
+
+.btn.enrich {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.finding {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 5px 2px;
+}
+
+.spinner {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.hit-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 5px 8px;
+  margin: 5px 0;
+  font-size: 12px;
+}
+.hit-row.none {
+  color: var(--muted);
+  border-style: dashed;
+  background: none;
+}
+.hit-row.none.failed { color: var(--err); }
+
+.hit-value {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.hit-type {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.status-chip {
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border: 1px solid var(--border);
+}
+.status-chip.verified {
+  background: var(--good-bg);
+  color: var(--good-fg);
+  border-color: var(--good-border);
+}
+.status-chip.risky {
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+  border-color: var(--warn-border);
+}
+.status-chip.unknown {
+  background: var(--chip-bg);
+  color: var(--muted);
+}
+.status-chip.inferred {
+  background: var(--inferred-bg);
+  color: var(--inferred-fg);
+  border-color: var(--inferred-border);
+  cursor: help;
+}
+
+.provider-tag {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.hit-cost {
+  color: var(--muted);
+  font-size: 11px;
+  margin-left: auto;
+}
+
+.btn.icon.copy {
+  padding: 1px 6px;
+  flex: 0 0 auto;
+}
+
+/* ---------- skeleton ---------- */
+
+.skeleton { padding: 4px 0; }
+.skel-bar {
+  height: 12px;
+  border-radius: 4px;
+  background: var(--skeleton);
+  margin: 10px 0;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.skel-bar.w60 { width: 60%; }
+.skel-bar.w80 { width: 80%; }
+.skel-bar.w40 { width: 40%; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
